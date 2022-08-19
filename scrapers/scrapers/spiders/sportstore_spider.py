@@ -16,11 +16,10 @@ class Sportstorepider(CrawlSpider):
     start_urls = ['https://www.thesportstore.pk/']
 
     def parse_start_url(self, response, BY=None, **kwargs):
-        path = "/home/muqsitamir/PycharmProjects/AIsports/scrapers/WebDrivers/chromedriver_linux"
-        driver = webdriver.Chrome(executable_path=path)
+        driver = webdriver.Chrome(ChromeDriverManager().install())
         driver.get(self.start_urls[0])
         amount_of_categories = len(driver.find_elements(By.CSS_SELECTOR, ".xs-25"))
-        for index in range(13, amount_of_categories + 1):
+        for index in range(1, amount_of_categories + 1):
             selector = f".xs-25:nth-child({index})"
             element = driver.find_element(By.CSS_SELECTOR, selector)
             WebDriverWait(driver, 10).until(EC.element_to_be_clickable(element)).click()
