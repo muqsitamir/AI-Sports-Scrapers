@@ -25,7 +25,8 @@ class Sportstorepider(CrawlSpider):
             WebDriverWait(driver, 10).until(EC.element_to_be_clickable(element)).click()
             category_page_url = driver.current_url
 
-            if len(driver.find_elements(By.CSS_SELECTOR, ".main-posts")) == 0 and len(driver.find_elements(By.CSS_SELECTOR, ".product-grid-item")) > 0:
+            if len(driver.find_elements(By.CSS_SELECTOR, ".main-posts")) == 0 and len(
+                    driver.find_elements(By.CSS_SELECTOR, ".product-grid-item")) > 0:
                 pagination = len(driver.find_elements(By.CSS_SELECTOR, ".pagination > div > ul > li")) - 2
                 for page in range(1, pagination + 1):
                     driver.get(category_page_url + f"#/sort=p.sort_order/order=ASC/limit=16/page={page}")
@@ -65,14 +66,14 @@ class Sportstorepider(CrawlSpider):
                             selector_2 = f".product-grid-item:nth-child({index2})>div>.image"
                             element2 = driver.find_element(By.CSS_SELECTOR, selector_2)
                             WebDriverWait(driver, 10).until(EC.element_to_be_clickable(element2)).click()
+                            item = {
+                                "title": driver.find_element(By.CSS_SELECTOR, ".heading-title").text
+                                    }
+                            yield item
                         except NoSuchElementException:
-                            print(driver.current_url)
-
-                        ##here
+                            pass
 
                         driver.get(page_url)
 
-
                 driver.get(category_page_url)
             driver.get(self.start_urls[0])
-        response
