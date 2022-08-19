@@ -16,7 +16,7 @@ class Sportstorepider(CrawlSpider):
     start_urls = ['https://www.thesportstore.pk/']
 
     def parse_start_url(self, response, BY=None, **kwargs):
-        path = "/home/muqsitamir/PycharmProjects/AIsports/scrapers/WebDrivers/chromedriver"
+        path = "/home/muqsitamir/PycharmProjects/AIsports/scrapers/WebDrivers/chromedriver_linux"
         driver = webdriver.Chrome(executable_path=path)
         driver.get(self.start_urls[0])
         amount_of_categories = len(driver.find_elements(By.CSS_SELECTOR, ".xs-25"))
