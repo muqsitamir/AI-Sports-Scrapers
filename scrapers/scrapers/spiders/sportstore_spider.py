@@ -1,16 +1,15 @@
 import time
 
 from scrapy.spiders import CrawlSpider, Rule
-from scrapy import Request
 from selenium import webdriver
-from selenium.common.exceptions import TimeoutException, NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 
 
-class Sportstorepider(CrawlSpider):
+class SportStoreSpider(CrawlSpider):
     name = 'sportstore_crawl'
     allowed_domain = ['thesportstore.pk']
     start_urls = ['https://www.thesportstore.pk/']
@@ -39,6 +38,19 @@ class Sportstorepider(CrawlSpider):
                             selector_2 = f".product-grid-item:nth-child({index2})>div>.image"
                             element2 = driver.find_element(By.CSS_SELECTOR, selector_2)
                             WebDriverWait(driver, 10).until(EC.element_to_be_clickable(element2)).click()
+                            item = {
+                                "title": driver.find_element(By.CSS_SELECTOR, ".heading-title").text,
+                                'brand': driver.find_element(By.CSS_SELECTOR, ".p-brand a").text,
+                                'product-code': driver.find_element(By.CSS_SELECTOR, ".p-model span").text,
+                                'price': driver.find_element(By.CSS_SELECTOR, ".product-price").text,
+                                'options': [x.text for x in driver.find_elements(By.CSS_SELECTOR,
+                                                                                 ".list-unstyled.price + .options option:nth-child(n+2)")],
+                                'main-image': driver.find_element(By.CSS_SELECTOR, "div.image a").get_attribute('href'),
+                                'description': driver.find_element(By.CSS_SELECTOR, "div#tab-description").text,
+                                'images': [x.get_attribute('href') for x in
+                                           driver.find_elements(By.CSS_SELECTOR, "#product-gallery a")]
+                            }
+                            yield item
                         except NoSuchElementException:
                             print(driver.current_url)
 
@@ -67,8 +79,15 @@ class Sportstorepider(CrawlSpider):
                             element2 = driver.find_element(By.CSS_SELECTOR, selector_2)
                             WebDriverWait(driver, 10).until(EC.element_to_be_clickable(element2)).click()
                             item = {
-                                "title": driver.find_element(By.CSS_SELECTOR, ".heading-title").text
-                                    }
+                                "title": driver.find_element(By.CSS_SELECTOR, ".heading-title").text,
+                                'brand': driver.find_element(By.CSS_SELECTOR, ".p-brand a").text,
+                                'product-code': driver.find_element(By.CSS_SELECTOR, ".p-model span").text,
+                                'price': driver.find_element(By.CSS_SELECTOR, ".product-price").text,
+                                'options': [x.text for x in driver.find_elements(By.CSS_SELECTOR, ".list-unstyled.price + .options option:nth-child(n+2)")],
+                                'main-image': driver.find_element(By.CSS_SELECTOR, "div.image a").get_attribute('href'),
+                                'description': driver.find_element(By.CSS_SELECTOR, "div#tab-description").text,
+                                'images': [x.get_attribute('href') for x in driver.find_elements(By.CSS_SELECTOR, "#product-gallery a")]
+                                }
                             yield item
                         except NoSuchElementException:
                             pass
